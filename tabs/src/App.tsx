@@ -1,54 +1,54 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import Experiences from "./Experiences";
+import Experience from "./Experience";
 
 const url = "https://course-api.com/react-tabs-project";
+
 export interface IData {
   id: string;
   order: number;
   title: string;
   dates: string;
-  duties: string[];
+  duties: string;
   company: string;
 }
 
-function App() {
+export default function App() {
   const [data, setData] = useState<IData[]>([]);
-  const [num, setNum] = useState<number>(0);
+  const [id, setId] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
-  const fetchURL = (): void => {
-    fetch(url)
-      .then((res) => res.json())
-      .then((json) => {
-        const objectsSortedByOrder = json.sort(
-          (first: IData, second: IData) => second.order - first.order
-        );
-        const maxOrder = Math.max(...json.map((obj: IData) => obj.order));
-        setData(objectsSortedByOrder);
-        setNum(maxOrder);
-      })
-      .catch((err) => console.log(err.message));
+  const fetchURL = async (): Promise<void> => {
+    setLoading(true);
+    const response = await fetch(url);
+    const jobs = await response.json();
+    setData(jobs);
+    setId(jobs[0].id);
+    setLoading(false);
   };
-  useEffect(() => fetchURL(), []);
-  return (
-    <div>
-      <header>
-        <h1>Experience</h1>
-      </header>
-      {data.map((obj) => (
-        <button
-          key={obj.id}
-          style={{ display: "block" }}
-          onClick={() => setNum(obj.order)}
-        >
-          {obj.company}
-        </button>
-      ))}
-      <Experiences
-        singleExperience={data.filter((obj) => obj.order === num)[0]}
-      />
-    </div>
-  );
-}
 
-export default App;
+  useEffect((): void => {
+    fetchURL();
+  }, []);
+
+  if (loading) {
+    return <h1>Loading Data ...</h1>;
+  } else {
+    return (
+      <div>
+        <h2>Experiences</h2>
+        {data.map((obj) => {
+          return (
+            <button
+              key={obj.id}
+              style={{ display: "block" }}
+              onClick={() => setId(obj.id)}
+            >
+              {obj.company}
+            </button>
+          );
+        })}
+        <Experience propObj={data.filter((obj) => obj.id === id)[0]} />
+      </div>
+    );
+  }
+}
