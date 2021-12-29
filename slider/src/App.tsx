@@ -11,7 +11,8 @@ export interface IData {
 }
 const dataLength = data.length;
 
-// JS gives out negetive module for some reason
+// JS gives out negetive modulo for some reason
+// Check out modulo.png for how diff languages deal with modulo of negative integers
 // this function will correct that
 const moduloDL = (x: number): number =>
   ((x % dataLength) + dataLength) % dataLength;
