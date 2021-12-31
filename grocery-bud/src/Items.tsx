@@ -1,64 +1,26 @@
-import { ChangeEvent, FormEvent, ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { IItem } from "./App";
 
 export default function Items({
-  propArr,
-  deleteItem,
-  handleChange,
-  handleSubmit,
+  items,
+  removeItem,
+  handleEdit,
 }: {
-  propArr: IItem[];
-  deleteItem: (id: string) => void;
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  items: IItem[];
+  removeItem: (id: string) => void;
+  handleEdit: (id: string) => void;
 }): ReactElement {
   return (
     <div>
-      {propArr.map((obj) => {
+      {items.map((item) => {
         return (
-          <p key={obj.id}>
-            {obj.name}{" "}
-            <Options
-              id={obj.id}
-              deleteItem={deleteItem}
-              handleChange={handleChange}
-              handleChange={handleSubmit}
-            />
+          <p key={item.id}>
+            {item.name}
+            <button onClick={() => handleEdit(item.id)}>edit</button>
+            <button onClick={() => removeItem(item.id)}>delete</button>
           </p>
         );
       })}
-    </div>
-  );
-}
-
-function Options({
-  id,
-  deleteItem,
-  handleChange,
-  handleSubmit,
-}: {
-  id: string;
-  deleteItem: (id: string) => void;
-  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
-}): ReactElement {
-  const [editing, setEditing] = useState<boolean>(false);
-  return (
-    <div>
-      <button onClick={() => setEditing(true)} style={{ display: "inline" }}>
-        edit
-      </button>
-      <button onClick={() => deleteItem(id)} style={{ display: "inline" }}>
-        delete
-      </button>
-      {editing && (
-        <span>
-          <form>
-            <input type="text" onChange={handleChange} />
-            <button onClick={handleSubmit}>edit</button>
-          </form>
-        </span>
-      )}
     </div>
   );
 }
