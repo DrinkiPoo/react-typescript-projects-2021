@@ -1,4 +1,4 @@
-import React, { FormEvent, ReactElement, useState } from "react";
+import React, { ChangeEvent, FormEvent, ReactElement, useState } from "react";
 import Items from "./Items";
 
 export interface IItem {
@@ -15,8 +15,7 @@ export default function App(): ReactElement {
     setItems(newSet);
   };
 
-  const editItem = (id: string): void => {};
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     setItems([
       ...items,
@@ -25,18 +24,25 @@ export default function App(): ReactElement {
     setCurrent("");
   };
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setCurrent(e.target.value);
+  };
+
   return (
     <div>
       <header>Grocery butt</header>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-        />
+        <input type="text" value={current} onChange={handleChange} />
         <button type="submit">Submit</button>
       </form>
-      {items.length > 0 && <Items propArr={items} deleteItem={deleteItem} />}
+      {items.length > 0 && (
+        <Items
+          propArr={items}
+          deleteItem={deleteItem}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+        />
+      )}
       <button onClick={() => setItems([])}>Clear Items</button>
     </div>
   );
